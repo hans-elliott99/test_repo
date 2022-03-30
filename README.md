@@ -4,4 +4,7 @@ comment from github.com
 
 very cool
 
-practice closing commits
+practice closing commits  
+
+
+Editing from VS code (hit . to enter github.dev)  
