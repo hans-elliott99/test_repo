@@ -1,0 +1,62 @@
+---
+title: "Is polynomial regression nonlinear?"
+format:
+  html:
+    theme: default
+---
+Load libraries & generate data.  
+
+```{r}
+pacman::p_load(dplyr, ggplot2, scatterplot3d)
+
+
+set.seed(123)
+x = runif(100)
+y = runif(100)
+x_sq = x^2
+
+plot(x, x_sq)
+```
+
+Regress $y$ on $x$ and $x^2$.  
+Save predictions and all variables in a data frame. 
+
+```{r}
+df= data.frame(x, x_sq, y)
+lm1 = lm(y ~ x + x_sq, data = df)
+#add predictions to df
+df = data.frame(y_pred = predict(lm1, df), df)
+  (lm1)
+```
+
+Plot $y$ and $x$, and model relationship as nonlinear based on the linear model.
+```{r}
+df %>%
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  geom_line(aes(x, y_pred)) 
+#  geom_smooth(method = 'lm', formula = y ~ x + I(x^2))
+```
+
+
+Create plot with all three dimensions.
+```{r}
+s = scatterplot3d(x=df$x, y=df$x_sq, z=df$y, color="gray", pch=1, 
+                  xlab="X", ylab="X^2", zlab="Y", 
+                  xlim=c(0, 1), ylim=c(0,1), 
+                  zlim=c(0, 1), type="h", main="In pseudo-3D space")
+s$points(x=df$x, y=df$x_sq, z=df$y, col="red", pch=1)
+# add in paramters from lm1 model:
+s$plane3d(Intercept=0.6974, 
+          x.coef= -0.9127, y.coef=0.8263, 
+          col="blue")
+```
+
+**RESULT: a linear (flat) plane**
+- So even though we are using a 'nonlinear' relationship to model X and Y, we are still technically using a linear model.
+- The hyperplane that exists in the 3 dimensional space is flat/linear.
+- The 2d version we see on the typical graph, used to think about the relationship between x and y, appears nonlinear.
+
+
+
+
